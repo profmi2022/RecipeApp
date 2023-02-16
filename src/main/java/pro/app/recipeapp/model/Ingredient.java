@@ -1,17 +1,14 @@
 package pro.app.recipeapp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Ingredient {
 
     private String name;
     private int quantity;
     private String measureUnit;
 
-    public Ingredient(String name, int quantity, String measureUnit) {
-        this.name = name;
-        this.quantity = quantity;
-        this.measureUnit = measureUnit;
-    }
 }

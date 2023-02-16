@@ -59,7 +59,7 @@ public class RecipeServiceImpl implements RecipeService{
         steps.add("3. Все остальное...");
 
         recipeMap.put(1L, new Recipe("Суп", 40, ingredients1, steps));
-        recipeMap.put(2L, new Recipe("Суп", 40, ingredients1, steps));
+        recipeMap.put(2L, new Recipe("Бульон", 40, ingredients1, steps));
         recipeMap.put(3L, new Recipe("Суп-пюре", 30, ingredients2, steps));
         recipeMap.put(4L, new Recipe("Тарталетка", 30, ingredients2, steps));
         recipeMap.put(5L, new Recipe("Антрекот", 30, ingredients3, steps));
