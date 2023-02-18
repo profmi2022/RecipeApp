@@ -2,7 +2,6 @@ package pro.app.recipeapp.services;
 
 import pro.app.recipeapp.model.Ingredient;
 
-import java.util.Map;
 
 public interface IngredientService {
 

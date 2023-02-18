@@ -26,7 +26,7 @@ public class FirstController {
             summary = "Индикация запуска приложение",
             description = "Сообщение о запуске приложения")
     @GetMapping
-    public String AppStart() {
+    public String appStart() {
         return "Приложение запущено";
     }
 
@@ -34,7 +34,7 @@ public class FirstController {
             summary = "Информация о приложении",
             description = "Выводит сообщение с информацией о приложении")
     @GetMapping("/info")
-    public String AppInfo() {
+    public String appInfo() {
         return "<ul><li>Мария Исакова</li><li>RecipeApp</li><li>03.02.2023</li></ul>Моя первая гениальная программа, которую я <b><i>разрабатывала весь вечер</i></b> :D";
     }
 
@@ -42,7 +42,7 @@ public class FirstController {
             summary = "Индикация настроения",
             description = "Вывод зайчиков")
     @GetMapping("/fun")
-    public String AppFun(){
+    public String appFun(){
         return "<b><i>It's perfect</i></b><br><br>" +
                 "/)/)(\\(\\ <br>" +
                 "(':')(':') <br>" +

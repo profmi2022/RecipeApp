@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.app.recipeapp.model.Ingredient;
@@ -52,9 +53,9 @@ public class IngredientController {
             description = "Ищет ингредиент по id и меняет его значение по переданному параметру; " +
                     "если не нашел, возвращает статус NOT_FOUND")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editById(@PathVariable Long id, Ingredient ingredient) {
+    public ResponseEntity<?> editById(@PathVariable Long id, @RequestBody Ingredient ingredient) {
         Ingredient ingredient1 = ingredientService.editById(id, ingredient);
-        if (ingredient == null) {
+        if (ingredient1 == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(ingredient1, HttpStatus.OK);
@@ -78,6 +79,7 @@ public class IngredientController {
     @Operation(
             summary = "Возвращает всю коллекцию ингредиентов",
             description = "Возвращает все ингредиенты и статус OK")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @GetMapping
     public ResponseEntity<?> getAll() {
         return new ResponseEntity<>(ingredientService.getAll(), HttpStatus.OK);

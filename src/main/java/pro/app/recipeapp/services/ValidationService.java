@@ -5,7 +5,7 @@ import pro.app.recipeapp.model.Recipe;
 
 public interface ValidationService {
 
-    public boolean isValid(Ingredient ingredient);
-    public boolean isValid(Recipe recipe);
+    boolean isValid(Ingredient ingredient);
+    boolean isValid(Recipe recipe);
 
 }

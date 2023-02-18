@@ -52,9 +52,9 @@ public class RecipeController {
             description = "Ищет рецепт по id и меняет его значение по переданному параметру; " +
                     "если не нашел, возвращает статус NOT_FOUND")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editById(@PathVariable Long id, Recipe recipe) {
+    public ResponseEntity<?> editById(@PathVariable Long id, @RequestBody Recipe recipe) {
         Recipe recipe1 = recipeService.editById(id, recipe);
-        if (recipe == null) {
+        if (recipe1 == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(recipe1, HttpStatus.OK);
@@ -88,7 +88,7 @@ public class RecipeController {
             summary = "Возвращает всю коллекцию рецептов с разбивкой на страницы",
             description = "Передаются два параметра: номер страницы и количество рецептов на страницу")
     @GetMapping("/paged")
-    public ResponseEntity<?> getAll(@RequestParam int page, int recipePerPage) {
+    public ResponseEntity<?> getAll(@RequestParam int page, @RequestParam int recipePerPage) {
 
         return new ResponseEntity<>(recipeService.getAll(page, recipePerPage), HttpStatus.OK);
     }
@@ -108,7 +108,7 @@ public class RecipeController {
             description = "Передаются: номер страницы и количество рецептов на страницу, " +
                     "ингредиенты передаются по id, может быть задано любое количество ингредиентов. ")
     @GetMapping("/contains_paged")
-    public ResponseEntity<?> getByIngredient(@RequestParam int page, int recipePerPage, Long... ids){
+    public ResponseEntity<?> getByIngredient(@RequestParam int page, @RequestParam int recipePerPage, @RequestParam Long... ids){
 
         return new ResponseEntity<>(recipeService.getOutString(page, recipePerPage, recipeService.getByIngredient(ids)),
                 HttpStatus.OK);
