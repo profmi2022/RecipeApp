@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pro.app.recipeapp.model.Ingredient;
+import pro.app.recipeapp.model.Recipe;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -114,5 +117,21 @@ public class IngredientServiceImpl implements IngredientService {
         } else {
             idCounter = (long) (ingredientMap.size() + 1);
         }
+    }
+
+    public void uploadFile(MultipartFile file) throws Exception {
+
+        fileService.uploadFile(file, ingredientsPath);
+        Map<Long, Ingredient> newIngredientMap = fileService.readFromFile(ingredientsPath, file.getOriginalFilename(),
+                new TypeReference<>() { });
+        if (newIngredientMap != null) {
+            ingredientMap = newIngredientMap;
+            idCounter = (long) (ingredientMap.size() + 1);
+            fileService.saveToFile(ingredientMap, ingredientsPath, ingredientsFile);
+        }
+    }
+
+    public File getIngredientFileName() {
+        return new File(ingredientsPath, ingredientsFile);
     }
 }

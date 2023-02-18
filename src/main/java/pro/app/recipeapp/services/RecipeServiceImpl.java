@@ -1,12 +1,17 @@
 package pro.app.recipeapp.services;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pro.app.recipeapp.model.Ingredient;
 import pro.app.recipeapp.model.Recipe;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -196,5 +201,21 @@ public class RecipeServiceImpl implements RecipeService{
         } else {
             idCounter = (long) (recipeMap.size() + 1);
         }
+    }
+
+    public void uploadFile(MultipartFile file) throws Exception {
+
+        fileService.uploadFile(file, recipesPath);
+        Map<Long, Recipe> newRecipeMap = fileService.readFromFile(recipesPath, file.getOriginalFilename(), new TypeReference<>() {
+        });
+        if (newRecipeMap != null) {
+            recipeMap = newRecipeMap;
+            idCounter = (long) (recipeMap.size() + 1);
+            fileService.saveToFile(recipeMap, recipesPath, recipesFile);
+        }
+    }
+
+    public File getRecipeFileName() {
+        return new File(recipesPath, recipesFile);
     }
 }

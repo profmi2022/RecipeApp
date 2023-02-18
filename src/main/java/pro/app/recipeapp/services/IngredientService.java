@@ -1,6 +1,9 @@
 package pro.app.recipeapp.services;
 
+import org.springframework.web.multipart.MultipartFile;
 import pro.app.recipeapp.model.Ingredient;
+
+import java.io.File;
 
 
 public interface IngredientService {
@@ -11,5 +14,8 @@ public interface IngredientService {
     Ingredient deleteById(Long id);
     String getAll();
     String getName(Long id);
+    void uploadFile(MultipartFile file) throws Exception;
+    File getIngredientFileName();
+
 
 }
