@@ -21,5 +21,7 @@ public interface RecipeService {
     Map<Long, Recipe> getByIngredient(Long ... ids);
     void uploadFile(MultipartFile file) throws Exception;
     File getRecipeFileName();
+    File getRecipeFileNameText();
+    void prepareRecipesText();
 
     }

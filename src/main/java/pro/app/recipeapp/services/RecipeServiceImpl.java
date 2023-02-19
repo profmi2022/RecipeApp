@@ -11,6 +11,7 @@ import pro.app.recipeapp.model.Recipe;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Service
-public class RecipeServiceImpl implements RecipeService{
+public class RecipeServiceImpl implements RecipeService {
 
     private Map<Long, Recipe> recipeMap = new TreeMap<>();
     private static Long idCounter = 1L;
@@ -29,6 +30,8 @@ public class RecipeServiceImpl implements RecipeService{
     private String recipesPath;
     @Value("${name.of.file.recipes}")
     private String recipesFile;
+    @Value("${name.of.file.recipes.text}")
+    private String recipesFileText;
 
     public RecipeServiceImpl(ValidationService validationService, IngredientService ingredientService, FileService fileService) {
 
@@ -144,8 +147,8 @@ public class RecipeServiceImpl implements RecipeService{
     public String getOutString(Map<Long, Recipe> recipeMap) {
         String s = "";
         for (Long id : recipeMap.keySet()) {
-            Recipe recipe  = recipeMap.get(id);
-            if(!s.isEmpty()){
+            Recipe recipe = recipeMap.get(id);
+            if (!s.isEmpty()) {
                 s = s + "\n";
             }
             s = s + id + " " + recipe.getTitle() + ", " +
@@ -170,7 +173,7 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public Map<Long, Recipe> getByIngredient(Long ...ids) {
+    public Map<Long, Recipe> getByIngredient(Long... ids) {
         List<String> searchIngredientNames = new ArrayList<>(ids.length);
         for (Long id : ids) {
             searchIngredientNames.add(ingredientService.getName(id));   //входные параметры ids преобразовала в строки
@@ -183,7 +186,7 @@ public class RecipeServiceImpl implements RecipeService{
             for (Ingredient ingredient : recipe.getIngredients()) { //создание списка имен ингредиентов из рецепта
                 recipeIngredientNames.add(ingredient.getName());
             }
-            if(recipeIngredientNames.containsAll(searchIngredientNames)){
+            if (recipeIngredientNames.containsAll(searchIngredientNames)) {
                 foundRecipesMap.put(aLong, recipe);//если все искомые ингредиенты входят в список ингредиентов
                 // из рецепта, помещаем рецепт в итоговую коллекцию
             }
@@ -194,7 +197,8 @@ public class RecipeServiceImpl implements RecipeService{
     @PostConstruct
     private void init() {
 
-        recipeMap = fileService.readFromFile(recipesPath, recipesFile, new TypeReference<>() { });
+        recipeMap = fileService.readFromFile(recipesPath, recipesFile, new TypeReference<>() {
+        });
         if (recipeMap == null) {
             idCounter = 1L;
             recipeMap = new TreeMap<>();
@@ -217,5 +221,38 @@ public class RecipeServiceImpl implements RecipeService{
 
     public File getRecipeFileName() {
         return new File(recipesPath, recipesFile);
+    }
+
+    public File getRecipeFileNameText() {
+        return new File(recipesPath, recipesFileText);
+    }
+
+    public void prepareRecipesText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Список рецептов:");
+        for (Long aLong : recipeMap.keySet()) {
+            Recipe recipe = recipeMap.get(aLong);
+            sb.append("\n\n").append(recipe.getTitle());
+            sb.append("\nВремя приготовления: ").append(recipe.getCookingTime());
+            sb.append("\nИнгредиенты:");
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                sb.append("\n • ").append(ingredient.getName()).append(" - ").
+                        append(ingredient.getQuantity()).append(" ").
+                        append(ingredient.getMeasureUnit());
+            }
+            for (String step : recipe.getSteps()) {
+                sb.append("\n").append(step);
+            }
+        }
+        try {
+            Path path = Path.of(recipesPath, recipesFileText);
+            Files.createDirectories(path.getParent());
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+            Files.writeString(path, sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
 }

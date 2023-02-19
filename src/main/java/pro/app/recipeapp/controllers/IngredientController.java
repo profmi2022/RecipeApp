@@ -1,6 +1,9 @@
 package pro.app.recipeapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +25,21 @@ public class IngredientController {
 
     @Operation(
             summary = "Добавляет новый ингредиент в коллекцию",
-            description = "Добавляет ингредиент в коллекцию по JSON, передаваемому в теле запроса;" +
-                    "если ошибка в запросе, возвращает BAD_REQUEST")
+            description = "Добавляет ингредиент в коллекцию по JSON, передаваемому в теле запроса")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Ингредиент успешно добавлен",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "400",
+                            description = "Ошибка в запросе, ингредиент не добавлен",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+            }
+    )
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Ingredient ingredient) {
         Ingredient i = ingredientService.save(ingredient);
@@ -36,8 +52,21 @@ public class IngredientController {
 
     @Operation(
             summary = "Возвращает ингредиент из коллекции",
-            description = "Ищет ингредиент по id и возвращает его значение; " +
-                    "если не нашел, возвращает статус NOT_FOUND")
+            description = "Ищет ингредиент по id и возвращает его значение")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Ингредиент по id успешно найден",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Ингредиент по id не найден",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Ingredient ingredient = ingredientService.getById(id);
@@ -50,8 +79,21 @@ public class IngredientController {
 
     @Operation(
             summary = "Редактирует ингредиент в коллекции по id",
-            description = "Ищет ингредиент по id и меняет его значение по переданному параметру; " +
-                    "если не нашел, возвращает статус NOT_FOUND")
+            description = "Ищет ингредиент по id и меняет его значение по переданному параметру")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Ингредиент по id успешно отредактирован",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Ингредиент по id не найден",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+            }
+    )
     @PutMapping("/{id}")
     public ResponseEntity<?> editById(@PathVariable Long id, @RequestBody Ingredient ingredient) {
         Ingredient ingredient1 = ingredientService.editById(id, ingredient);
@@ -66,6 +108,20 @@ public class IngredientController {
             summary = "Удаляет ингредиент из коллекции по id",
             description = "Удаляет ингредиент по id; " +
                     "если не нашел, возвращает статус NOT_FOUND")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Ингредиент по id успешно удален",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Ингредиент по id не найден",
+                            content = {
+                                    @Content(schema = @Schema(implementation = Ingredient.class))}),
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Ingredient ingredient = ingredientService.deleteById(id);
